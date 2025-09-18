@@ -13,12 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/myapp", {
@@ -232,18 +226,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// Get current user profile
-app.get("/api/auth/profile", authenticateToken, async (req, res) => {
-  res.json({
-    user: {
-      id: req.user._id,
-      username: req.user.username,
-      email: req.user.email,
-      role: req.user.role,
-      createdAt: req.user.createdAt,
-    },
-  });
-});
 
 // CRUD Routes for Items
 
@@ -410,10 +392,6 @@ app.delete("/api/items/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Health check endpoint
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString() });
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
