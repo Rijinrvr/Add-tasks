@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -12,7 +11,6 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
-
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/myapp", {
@@ -226,7 +224,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-
 // CRUD Routes for Items
 
 // Create Item
@@ -392,15 +389,14 @@ app.delete("/api/items/:id", authenticateToken, async (req, res) => {
   }
 });
 
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-// 404 handler
-app.use("*", (req, res) => {
+// 404 handler - FIXED: Use proper Express route pattern
+app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
